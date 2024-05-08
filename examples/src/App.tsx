@@ -1,0 +1,33 @@
+import { useState } from 'react';
+
+import reactLogo from './assets/react.svg';
+import './App.css';
+import { UsedParent } from './features/used';
+import { Used } from './foundations';
+
+function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div className="App">
+      <div>
+        <a href="https://reactjs.org" rel="noreferrer" target="_blank">
+          <img alt="React logo" className="logo react" src={reactLogo} />
+        </a>
+      </div>
+      <h1>Rspack + React + TypeScript</h1>
+      <div className="card">
+        <button onClick={() => setCount((count) => count + 1)}>count is {count}</button>
+        <p>
+          Edit <code>src/App.tsx</code> and save to test HMR
+        </p>
+      </div>
+      <p className="read-the-docs">Click on the Rspack and React logos to learn more</p>
+
+      <UsedParent />
+      <Used />
+    </div>
+  );
+}
+
+export default App;

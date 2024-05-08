@@ -1,0 +1,65 @@
+{
+  "name": "@cut0/dedede-deadcode",
+  "version": "0.1.2",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cut0/dedede-deadcode.git"
+  },
+  "license": "MIT",
+  "author": "cut0",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "format": "run-s format:eslint format:prettier",
+    "format:eslint": "eslint --fix --ext ts,tsx,js .",
+    "format:prettier": "prettier --ignore-path .prettierignore  --write '**/*.{js,ts,tsx}'",
+    "lint": "run-s lint:eslint lint:prettier",
+    "lint:eslint": "eslint --ext ts,tsx,js ./",
+    "lint:prettier": "prettier --ignore-path .prettierignore  --check '**/*.{js,ts,tsx}'",
+    "build": "tsc --declaration --emitDeclarationOnly --declarationDir ./dist && tsx ./src/build.ts",
+    "release": "pnpm build && changeset publish"
+  },
+  "dependencies": {
+    "minimatch": "^9.0.4",
+    "ts-morph": "^22.0.0"
+  },
+  "devDependencies": {
+    "@changesets/changelog-github": "^0.5.0",
+    "@changesets/cli": "^2.27.1",
+    "@types/node": "^20.12.8",
+    "@typescript-eslint/eslint-plugin": "^7.8.0",
+    "@typescript-eslint/parser": "^7.8.0",
+    "esbuild": "^0.20.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.2",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^3.2.5",
+    "prettier-plugin-packagejson": "^2.5.0",
+    "tsx": "^4.9.1",
+    "typescript": "^5.4.5",
+    "vitest": "^1.6.0"
+  },
+  "packageManager": "pnpm@8.7.0",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  }
+}

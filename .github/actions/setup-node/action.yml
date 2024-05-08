@@ -1,0 +1,10 @@
+name: Setup Node.js
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-node@v4
+      with:
+        node-version-file: .tool-versions
+        registry-url: https://npm.pkg.github.com
+        scope: '@cut0'
