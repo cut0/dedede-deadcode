@@ -1,6 +1,6 @@
 import path from 'path';
 
-import { getFilePathList, isContainDir, isMatchFileName, isMatchPattern } from '../features/fs/utils';
+import { getFilePathList, isMatchFileName, isMatchPattern } from '../features/fs/utils';
 import { getRelationList } from '../features/relation-list/ast';
 import { dfs } from '../features/relation-list/dfs';
 
@@ -10,7 +10,6 @@ export type dededeOption = {
   entryPoint: string;
   targetDir: string;
   targetImportType: ('import' | 'require' | 'dynamicImport')[];
-  ignoreDirs?: string[];
   ignoreFiles?: string[];
   ignorePatterns?: string[];
 };
@@ -21,24 +20,15 @@ export const dedede = async (option: dededeOption) => {
   console.log('TargetDir:', path.resolve(option.targetDir));
   console.log();
 
-  const files = getFilePathList(option.targetDir);
+  const { ignoreFiles = [], ignorePatterns = [] } = option;
+
+  const files = getFilePathList(option.targetDir)
+    .filter((filePath) => !isMatchFileName(filePath, ignoreFiles))
+    .filter((filePath) => !isMatchPattern(filePath, ignorePatterns));
 
   const relationList: RelationNode[] = [];
 
   for (const filePath of files) {
-    const { ignoreDirs = [], ignoreFiles = [], ignorePatterns = [] } = option;
-
-    if (isMatchFileName(filePath, ignoreFiles)) {
-      continue;
-    }
-
-    if (isContainDir(filePath, ignoreDirs)) {
-      continue;
-    }
-
-    if (isMatchPattern(filePath, ignorePatterns)) {
-      continue;
-    }
     const relationListPerFile = getRelationList({
       baseFilePath: filePath,
       targetImportType: option.targetImportType,
