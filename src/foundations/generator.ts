@@ -25,7 +25,7 @@ export const dedede = async (option: dededeOption) => {
 
   const files = getFilePathList(option.targetDir)
     .filter((filePath) => !isMatchFileName(filePath, ignoreFiles))
-    .filter((filePath) => !isContainDir(filePath, ignoreDirNames))
+    .filter((filePath) => !isContainDir(filePath, ['node_modules', ...ignoreDirNames]))
     .filter((filePath) => !isMatchPattern(filePath, ignorePatterns));
 
   const relationList: RelationNode[] = [];
