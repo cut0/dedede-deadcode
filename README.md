@@ -53,3 +53,25 @@ generate report done!
 ※ In the above, `/path/to/examples/src/foundations/Unused.tsx` is marked as used because `/path/to/examples/src/foundations/index.ts` is exported by \* mark. It will be fixed next versions.
 
 ## Document
+
+### dedede function
+
+Asynchronous function that returns files that are used and not used.
+
+#### Args
+
+| Name               | Type                                           | Description                                                                                          |
+| ------------------ | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `entryPoint`       | `string`                                       | The file from which the scan originates.Search for imported files starting from this file.           |
+| `targetDir`        | `string`                                       | The target directory, to be matched against the results of the search starting from the `entryPoint` |
+| `targetImportType` | `('import' \| 'require' \| 'dynamicImport')[]` | Module reference format. Each corresponds to `import` , `require` , `import()`                       |
+| `ignoreFiles`      | `string[]?`                                    | Ignore File Names.                                                                                   |
+| `ignoreDirNames`   | `string[]?`                                    | Ignore Dirctory Names.                                                                               |
+| `ignorePatterns`   | `string[]?`                                    | Ignore Patterns.                                                                                     |
+
+#### Return Values
+
+| Name          | Type       | Description                                 |
+| ------------- | ---------- | ------------------------------------------- |
+| `usedFiles`   | `string[]` | Returns the referenced file in `targetDir`  |
+| `unusedFiles` | `string[]` | Returns files not referenced in `targetDir` |
