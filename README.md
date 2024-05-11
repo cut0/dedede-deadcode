@@ -60,14 +60,15 @@ Asynchronous function that returns files that are used and not used.
 
 #### Args
 
-| Name               | Type                                           | Description                                                                                          |
-| ------------------ | ---------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `entryPoint`       | `string`                                       | The file from which the scan originates.Search for imported files starting from this file.           |
-| `targetDir`        | `string`                                       | The target directory, to be matched against the results of the search starting from the `entryPoint` |
-| `targetImportType` | `('import' \| 'require' \| 'dynamicImport')[]` | Module reference format. Each corresponds to `import` , `require` , `import()`                       |
-| `ignoreFiles`      | `string[]?`                                    | Ignore File Names.                                                                                   |
-| `ignoreDirNames`   | `string[]?`                                    | Ignore Dirctory Names.                                                                               |
-| `ignorePatterns`   | `string[]?`                                    | Ignore Patterns.                                                                                     |
+| Name               | Type                                           | Description                                                                                                  |
+| ------------------ | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `entryPoint`       | `string`                                       | The file from which the scan originates.Search for imported files starting from this file.                   |
+| `targetDir`        | `string`                                       | The target directory, to be matched against the results of the search starting from the `entryPoint`         |
+| `targetImportType` | `('import' \| 'require' \| 'dynamicImport')[]` | Module reference format. Each corresponds to `import` , `require` , `import()`                               |
+| `ignoreFiles`      | `string[]?`                                    | Ignore File Names.                                                                                           |
+| `ignoreDirNames`   | `string[]?`                                    | Ignore Dirctory Names.                                                                                       |
+| `ignorePatterns`   | `string[]?`                                    | Ignore Patterns.                                                                                             |
+| `aliasResolver`    | `Record<string,string>`                        | Alias Resolver. If `{ "@" : ".", "~" : ".." }`, then it would be `~/@/path` will be replaced as `.././path`. |
 
 #### Return Values
 
