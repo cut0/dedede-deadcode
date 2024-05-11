@@ -8,6 +8,7 @@ import {
   isMatchFileName,
   isMatchPattern,
   isSupportExtension,
+  replaceAliasMap,
 } from './utils';
 
 test.each([
@@ -164,4 +165,12 @@ test.each([
   [{ filePath: 'path.tsx', extensions: ['ts'] }, false],
 ])(isSupportExtension.name, ({ filePath, extensions }, expected) => {
   expect(isSupportExtension(filePath, extensions)).toBe(expected);
+});
+
+test.each([
+  [{ filePath: '@/path.tsx', map: { '@': '.' } }, './path.tsx'],
+  [{ filePath: '@/~/path.tsx', map: { '@': '.', '~': '.' } }, '././path.tsx'],
+  [{ filePath: './path.tsx', map: { '@': './' } }, './path.tsx'],
+])(isSupportExtension.name, ({ filePath, map }, expected) => {
+  expect(replaceAliasMap(filePath, map)).toBe(expected);
 });

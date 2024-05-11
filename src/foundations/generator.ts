@@ -13,6 +13,7 @@ export type dededeOption = {
   ignoreDirNames?: string[];
   ignoreFiles?: string[];
   ignorePatterns?: string[];
+  aliasResolver?: Record<string, string>;
 };
 
 export const dedede = async (option: dededeOption) => {
@@ -34,6 +35,7 @@ export const dedede = async (option: dededeOption) => {
     const relationListPerFile = getRelationList({
       baseFilePath: filePath,
       targetImportType: option.targetImportType,
+      aliasResolver: option.aliasResolver ?? {},
     });
 
     relationList.push(...relationListPerFile);

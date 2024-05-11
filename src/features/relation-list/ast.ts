@@ -4,11 +4,11 @@ import { Project, SyntaxKind } from 'ts-morph';
 
 import { SUPPORT_EXTENSIONS } from '../../foundations/constants';
 import { ImportType, RelationNode } from '../../foundations/types';
-import { findFileWithExtension, hasExtension, isExternalPath, isSupportExtension } from '../fs/utils';
+import { findFileWithExtension, hasExtension, isExternalPath, isSupportExtension, replaceAliasMap } from '../fs/utils';
 
 const insertRelationNode = (
   baseFilePath: string,
-  childFile: string,
+  childRelativeFilePath: string,
   {
     relationList,
     importType,
@@ -17,10 +17,10 @@ const insertRelationNode = (
     importType: ImportType;
   },
 ) => {
-  if (isExternalPath(childFile)) {
+  if (isExternalPath(childRelativeFilePath)) {
     relationList.push({
       parentPath: baseFilePath,
-      childPath: childFile,
+      childPath: childRelativeFilePath,
       context: {
         importType: importType,
         targetType: 'external',
@@ -29,29 +29,31 @@ const insertRelationNode = (
     });
     return;
   }
-  if (hasExtension(childFile)) {
+  if (hasExtension(childRelativeFilePath)) {
     relationList.push({
       parentPath: baseFilePath,
-      childPath: path.join(path.dirname(baseFilePath), childFile),
+      childPath: path.join(path.dirname(baseFilePath), childRelativeFilePath),
       context: {
         importType: importType,
         targetType: 'file',
-        isSupported: isSupportExtension(childFile, SUPPORT_EXTENSIONS),
+        isSupported: isSupportExtension(childRelativeFilePath, SUPPORT_EXTENSIONS),
       },
     });
     return;
   }
-  findFileWithExtension(path.join(path.dirname(baseFilePath), childFile), SUPPORT_EXTENSIONS).forEach((childPath) => {
-    relationList.push({
-      parentPath: baseFilePath,
-      childPath,
-      context: {
-        importType: importType,
-        targetType: 'file',
-        isSupported: true,
-      },
-    });
-  });
+  findFileWithExtension(path.join(path.dirname(baseFilePath), childRelativeFilePath), SUPPORT_EXTENSIONS).forEach(
+    (childPath) => {
+      relationList.push({
+        parentPath: baseFilePath,
+        childPath,
+        context: {
+          importType: importType,
+          targetType: 'file',
+          isSupported: true,
+        },
+      });
+    },
+  );
 };
 
 const project = new Project();
@@ -59,9 +61,10 @@ const project = new Project();
 type Option = {
   baseFilePath: string;
   targetImportType: ('import' | 'require' | 'dynamicImport')[];
+  aliasResolver: Record<string, string>;
 };
 
-export const getRelationList = ({ baseFilePath, targetImportType }: Option): RelationNode[] => {
+export const getRelationList = ({ baseFilePath, targetImportType, aliasResolver }: Option): RelationNode[] => {
   const sourceFile = project.addSourceFileAtPath(baseFilePath);
 
   const relationList: RelationNode[] = [];
@@ -95,7 +98,8 @@ export const getRelationList = ({ baseFilePath, targetImportType }: Option): Rel
       if (importedChild === undefined) {
         return;
       }
-      insertRelationNode(baseFilePath, importedChild, {
+      const childRelativeFilePath = replaceAliasMap(importedChild, aliasResolver);
+      insertRelationNode(baseFilePath, childRelativeFilePath, {
         relationList: relationList,
         importType: 'import',
       });
@@ -111,7 +115,8 @@ export const getRelationList = ({ baseFilePath, targetImportType }: Option): Rel
         const [requireArg] = callExpr.getArguments();
         if (requireArg?.getKind() === SyntaxKind.StringLiteral) {
           const importedChild = requireArg.getText().replace(/['"]/g, '');
-          insertRelationNode(baseFilePath, importedChild, {
+          const childRelativeFilePath = replaceAliasMap(importedChild, aliasResolver);
+          insertRelationNode(baseFilePath, childRelativeFilePath, {
             relationList: relationList,
             importType: 'dynamicImport',
           });
@@ -130,7 +135,8 @@ export const getRelationList = ({ baseFilePath, targetImportType }: Option): Rel
         const [requireArg] = callExpr.getArguments();
         if (requireArg?.getKind() === SyntaxKind.StringLiteral) {
           const requiredChild = requireArg.getText().replace(/['"]/g, '');
-          insertRelationNode(baseFilePath, requiredChild, {
+          const childRelativeFilePath = replaceAliasMap(requiredChild, aliasResolver);
+          insertRelationNode(baseFilePath, childRelativeFilePath, {
             relationList: relationList,
             importType: 'require',
           });

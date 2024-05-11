@@ -69,3 +69,9 @@ export const findFileWithExtension = (filePath: string, extensions: string[]) =>
     })
     .filter((file) => file != null) as string[];
 };
+
+export const replaceAliasMap = (filePath: string, aliasResolver: Record<string, string>) => {
+  return Object.entries(aliasResolver).reduce((acc, [alias, realPath]) => {
+    return acc.replace(alias, realPath);
+  }, filePath);
+};
